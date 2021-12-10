@@ -1,61 +1,44 @@
-import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import Plane from './plane';
 import Straw from './straw';
 
-const positions: [number, number, number][] =
-  [
-    [0, 0, 0],
-    [.1, 0, 0],
-    [.2, 0, 0],
-    [.3, 0, 0],
-    [.4, 0, 0],
-    [.5, 0, 0],
-    [.6, 0, 0],
-    [.7, 0, 0],
-    [.8, 0, 0],
-    [.9, 0, 0],
-    [1, 0, 0],
+const limitPosXY = [[-0.2, -0.2], [0.8, 0.2]]
 
-    [.10, 0, 0],
-    [1.1, 0, 0],
-    [1.2, 0, 0],
-    [1.3, 0, 0],
-    [1.4, 0, 0],
-    [1.5, 0, 0],
-    [1.6, 0, 0],
-    [1.7, 0, 0],
-    [1.8, 0, 0],
-    [1.9, 0, 0],
-    [2.0, 0, 0],
+const getPositions = () => {
+  let positions: [number, number, number][] = [[0, 0, 0]];
+  let X = 0;
+  let Y = 0;
 
-    [0.0, 0, .53],
-    [0.1, 0, .53],
-    [0.2, 0, .53],
-    [0.3, 0, .53],
-    [0.4, 0, .53],
-    [0.5, 0, .53],
-    [0.6, 0, .53],
-    [0.7, 0, .53],
-    [0.8, 0, .53],
-    [0.9, 0, .53],
-    [0.0, 0, .53],
+  for (let posY = limitPosXY[0][1]; posY < limitPosXY[1][1]; posY += 0.53) {
 
-    [1.0, 0, .53],
-    [1.1, 0, .53],
-    [1.2, 0, .53],
-    [1.3, 0, .53],
-    [1.4, 0, .53],
-    [1.5, 0, .53],
-    [1.6, 0, .53],
-    [1.7, 0, .53],
-    [1.8, 0, .53],
-    [1.9, 0, .53],
-    [2.0, 0, .53]
-  ]
+    for (let posX = limitPosXY[0][0]; posX < limitPosXY[1][0]; posX += 0.1) {
+      positions[X] = [0, 0, 0];
+      positions[X][0] = posX;
+      positions[X][2] = posY;
+      X++;
+    }
+  }
+
+
+
+
+  return positions;
+}
+
+
+
 
 const Logo: React.FC = () => {
   const [mouseEvent, _setMouseEvent] = useState<MouseEvent | undefined>(undefined);
   const mouseEventRef = useRef(mouseEvent);
+
+  const positions = useMemo(() => {
+    const positions = getPositions();
+    console.log(positions);
+    return positions;
+  }, []);
+
+
   const setMouseEvent = (ev: MouseEvent) => {
     mouseEventRef.current = ev;
     _setMouseEvent(ev);
@@ -85,3 +68,4 @@ const Logo: React.FC = () => {
 }
 
 export default Logo;
+
