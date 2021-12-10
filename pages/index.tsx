@@ -14,6 +14,8 @@ const Home: NextPage = () => {
       </Head>
 
       <Link href={"/friggly/"}>Friggly</Link>
+      <br></br>
+      <Link href={"/plastic/"}>Plastic</Link>
     </div>
   )
 }

@@ -4,10 +4,14 @@ import { randomNumber } from '../../../utils/randomnumber';
 
 interface props {
   mouseXY: [number | undefined, number | undefined],
-  position: [number, number, number]
+  position: [number, number, number],
+  rotation?: [number, number, number],
+  width?: number
 }
 
-const Straw: React.FC<props> = ({ mouseXY, position }) => {
+const unevenness = 80;
+
+const Straw: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width = 0.5 }) => {
   const [isBeingMoved, _setIsBeingMoved] = useState(false);
   const isBeingMovedRef = useRef(isBeingMoved);
   const setIsBeingMoved = (answ: boolean) => {
@@ -19,11 +23,11 @@ const Straw: React.FC<props> = ({ mouseXY, position }) => {
   const [positionOnScreen, setPositionOnScreen] = useState<[number, number] | undefined>(undefined);
   const meshRef = createRef<CanvasRef.Mesh>();
   const randomRotation: [number, number, number] = useMemo(() => {
-    return [randomNumber(40), randomNumber(40), randomNumber(40)]
+    return [randomNumber(unevenness), randomNumber(unevenness), randomNumber(unevenness)]
   }, [])
 
   const spring = useSpring({
-    rotation: [randomRotation[0], randomRotation[1], randomRotation[2] - tilt[0]],
+    rotation: [rotation[0] + randomRotation[0], rotation[1] + randomRotation[1], rotation[2] + randomRotation[2] - tilt[0]],
     position: [position[0] + tilt[0] / 5, position[1], position[2]],
     config: {
       mass: 1,
@@ -59,9 +63,9 @@ const Straw: React.FC<props> = ({ mouseXY, position }) => {
 
   return (
     <a.mesh onPointerOver={onPointerOverEventHandler} position={spring.position} receiveShadow castShadow ref={meshRef} rotation={spring.rotation}>
-      <boxGeometry args={[.05, .5, .5]} />
+      <boxGeometry args={[.05, .5, width + randomNumber(200)]} />
       {/* <sphereGeometry args={[75, 16, 8, 0, 2, 1, 1.2]} /> */}
-      <meshPhysicalMaterial color={"#FFAA5A"} />
+      <meshPhongMaterial fog roughness={0} metalness={0.5} reflectivity={0.5} color={"#FFD6E0"} />
     </a.mesh>
   )
 }

@@ -1,44 +1,50 @@
 import { NextPage } from 'next';
 import React from 'react';
-import { PresentationControls } from '@react-three/drei';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { ContactShadows, PresentationControls, Plane, CameraShake } from '@react-three/drei';
+import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
 import { Canvas } from '@react-three/fiber'
 import Centralizer from '../../components/layout/Centralizer';
 import Fullscreen from '../../components/layout/FullScreen';
 import Straw from './components/straw';
 import Logo from './components/logo';
 
+const config = {
+  maxYaw: 0.01, // Max amount camera can yaw in either direction
+  maxPitch: 0.01, // Max amount camera can pitch in either direction
+  maxRoll: 0.01, // Max amount camera can roll in either direction
+  yawFrequency: 0, // Frequency of the the yaw rotation
+  pitchFrequency: 0.6, // Frequency of the pitch rotation
+  rollFrequency: 0.6, // Frequency of the roll rotation
+  intensity: 0.6, // initial intensity of the shake
+  decay: false, // should the intensity decay over time
+  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
+  additive: false, // this should be used when your scene has orbit controls
+}
+
 const FrigglyPage: NextPage = () => {
   return (
     <Fullscreen>
       <Centralizer>
         <Canvas>
-          <color attach="background" args={['yellow']} />
-          <ambientLight intensity={0.4} />
+          <CameraShake {...config} />
+          <color attach="background" args={['#F7A9A8']} />
+          <ambientLight intensity={0.001} />
           <directionalLight
-            position={[0, 100, 0]}
-            intensity={2}
+            position={[0, 10, 10]}
+            intensity={2.5}
             castShadow
           />
-          {/* <pointLight
-            castShadow
-            intensity={0.2}
-            args={[0xff0000, 1, 100]}
-            position={[1, 1, 1]}
-          /> */}
-
-          {/* <spotLight
-            castShadow
-            intensity={1}
-            args={["white", 1, 100]}
-            position={[-5, -2, 1]}
-          /> */}
-          <PresentationControls global zoom={0.9} rotation={[Math.PI / 2 - 0.2, Math.PI / 2, 0.1]} polar={[-2, 2]} azimuth={[-2, 2]}>
-            <Logo />
+          <PresentationControls global zoom={1.1} rotation={[Math.PI / 4, Math.PI / 4, 0]} polar={[0, 0]} azimuth={[-0.05, 0.05]}>
+            <group position={[-.4, 1, 0]} dispose={null}>
+              <Logo />
+              {/* <Plane /> */}
+            </group>
           </PresentationControls>
-          {/* <EffectComposer multisampling={8}>
-            <Bloom intensity={0.4} luminanceThreshold={0.8} luminanceSmoothing={0.01} kernelSize={5} />
-          </EffectComposer> */}
+          <EffectComposer multisampling={8}>
+            <SSAO samples={11} radius={30} intensity={20} luminanceInfluence={0.6} color="red" />
+            <SSAO samples={21} radius={7} intensity={20} luminanceInfluence={0.6} color="red" />
+            <Bloom intensity={0.1} luminanceThreshold={0.8} luminanceSmoothing={0.01} kernelSize={5} />
+          </EffectComposer>
         </Canvas>
       </Centralizer>
     </Fullscreen>
