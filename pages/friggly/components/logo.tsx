@@ -1,5 +1,57 @@
 import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import Plane from './plane';
 import Straw from './straw';
+
+const positions: [number, number, number][] =
+  [
+    [0, 0, 0],
+    [.1, 0, 0],
+    [.2, 0, 0],
+    [.3, 0, 0],
+    [.4, 0, 0],
+    [.5, 0, 0],
+    [.6, 0, 0],
+    [.7, 0, 0],
+    [.8, 0, 0],
+    [.9, 0, 0],
+    [1, 0, 0],
+
+    [.10, 0, 0],
+    [1.1, 0, 0],
+    [1.2, 0, 0],
+    [1.3, 0, 0],
+    [1.4, 0, 0],
+    [1.5, 0, 0],
+    [1.6, 0, 0],
+    [1.7, 0, 0],
+    [1.8, 0, 0],
+    [1.9, 0, 0],
+    [2.0, 0, 0],
+
+    [0.0, 0, .53],
+    [0.1, 0, .53],
+    [0.2, 0, .53],
+    [0.3, 0, .53],
+    [0.4, 0, .53],
+    [0.5, 0, .53],
+    [0.6, 0, .53],
+    [0.7, 0, .53],
+    [0.8, 0, .53],
+    [0.9, 0, .53],
+    [0.0, 0, .53],
+
+    [1.0, 0, .53],
+    [1.1, 0, .53],
+    [1.2, 0, .53],
+    [1.3, 0, .53],
+    [1.4, 0, .53],
+    [1.5, 0, .53],
+    [1.6, 0, .53],
+    [1.7, 0, .53],
+    [1.8, 0, .53],
+    [1.9, 0, .53],
+    [2.0, 0, .53]
+  ]
 
 const Logo: React.FC = () => {
   const [mouseEvent, _setMouseEvent] = useState<MouseEvent | undefined>(undefined);
@@ -25,7 +77,9 @@ const Logo: React.FC = () => {
 
   return (
     <group position-y={-0.15} dispose={null}>
-      <Straw XY={[mouseEventRef?.current?.clientX, mouseEventRef?.current?.clientY]} />
+      {positions.map(p => <Straw key={p[0] + p[1] + p[2]} position={p} mouseXY={[mouseEventRef?.current?.clientX, mouseEventRef?.current?.clientY]} />)}
+
+      <Plane />
     </group>
   )
 }

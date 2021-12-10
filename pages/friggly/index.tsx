@@ -13,10 +13,27 @@ const FrigglyPage: NextPage = () => {
     <Fullscreen>
       <Centralizer>
         <Canvas>
-          <color attach="background" args={['white']} />
-          <ambientLight intensity={0.1} />
-          <PresentationControls global zoom={0.95} rotation={[0.1, 0.05, 0]} polar={[0, 0]} azimuth={[0, 0]}>
-            <directionalLight color="white" position={[0, 0, 5]} />
+          <color attach="background" args={['yellow']} />
+          <ambientLight intensity={0.4} />
+          <directionalLight
+            position={[0, 100, 0]}
+            intensity={.5}
+            castShadow
+          />
+          {/* <pointLight
+            castShadow
+            intensity={0.2}
+            args={[0xff0000, 1, 100]}
+            position={[1, 1, 1]}
+          /> */}
+
+          <spotLight
+            castShadow
+            intensity={1}
+            args={["white", 1, 100]}
+            position={[-5, -2, 1]}
+          />
+          <PresentationControls global zoom={0.9} rotation={[Math.PI / 2, -0.0005, 0]} polar={[0,0]} azimuth={[0,0]}>
             <Logo />
           </PresentationControls>
           <EffectComposer multisampling={8}>
