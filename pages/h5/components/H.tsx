@@ -38,7 +38,8 @@ const H: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width = 0
       mass: 1,
       friction: 10,
       tension: 300
-    }
+    },
+    onStart: () => setTimeout(() => setTilt([0, 0]), 1000)
   })
 
   useEffect(() => {

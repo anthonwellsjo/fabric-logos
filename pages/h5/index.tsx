@@ -35,7 +35,7 @@ const FrigglyPage: NextPage = () => {
             castShadow
           />
           <PresentationControls global zoom={1.1} rotation={[Math.PI / 3, Math.PI / 2, .2]} polar={[-0.1, 0.1]} azimuth={[0, 0.1]}>
-            <group position={[-0.2,1,-1.2]} dispose={null}>
+            <group position={[-0.2, 1.9, -1.2]} dispose={null}>
               <Logo />
               {/* <Plane /> */}
             </group>
