@@ -11,7 +11,7 @@ interface props {
 
 const unevenness = 80;
 
-const Straw: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width = 0.5 }) => {
+const Five: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width = 0.5 }) => {
   const [isBeingMoved, _setIsBeingMoved] = useState(false);
   const isBeingMovedRef = useRef(isBeingMoved);
   const setIsBeingMoved = (answ: boolean) => {
@@ -19,7 +19,12 @@ const Straw: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width
     isBeingMovedRef.current = answ;
   }
 
-  const [tilt, setTilt] = useState<[number, number]>([0, 0]);
+  const [tilt, _setTilt] = useState<[number, number]>([0, 0]);
+  const tiltRef = useRef(tilt);
+  const setTilt = (movements: [number, number]) => {
+    _setTilt(movements);
+    tiltRef.current = movements;
+  }
   const [positionOnScreen, setPositionOnScreen] = useState<[number, number] | undefined>(undefined);
   const meshRef = createRef<CanvasRef.Mesh>();
   const randomRotation: [number, number, number] = useMemo(() => {
@@ -27,31 +32,44 @@ const Straw: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width
   }, [])
 
   const spring = useSpring({
-    rotation: [rotation[0] + randomRotation[0], rotation[1] + randomRotation[1], rotation[2] + randomRotation[2] - tilt[0]],
-    position: [position[0] + tilt[0] / 5, position[1], position[2]],
+    rotation: [rotation[0] + randomRotation[0] + tiltRef.current[1], rotation[1] + randomRotation[1], rotation[2] + randomRotation[2] - tiltRef.current[0]],
+    position: [position[0] + tiltRef.current[0] / 5, position[1], position[2] + tiltRef.current[1] / 5],
     config: {
       mass: 1,
-      friction: 2,
+      friction: 10,
       tension: 300
     }
   })
 
   useEffect(() => {
-    if (isBeingMovedRef.current && positionOnScreen != null) {
-      let movements: [number, number] = [0, 0];
-      if (mouseXY[0] != null) {
-        movements[0] = (mouseXY[0] - positionOnScreen[0]) / 5
-      }
-      // if (mouseXY[1] != null) {
-      //   movements[1] = mouseXY[1] - positionOnScreen[1]
-      // }
-      if (Math.abs(movements.reduce((a, b) => a + b)) > 1) {
-        setIsBeingMoved(false);
-        setTilt([0, 0]);
-      } else if (Math.abs(movements[0]) < 0.3 && Math.abs(movements[1]) < 0.3) {
+    if (tilt)
+
+      if (isBeingMovedRef.current && positionOnScreen != null) {
+        let movements: [number, number] = [0, 0];
+
+        if (mouseXY[0] != null) {
+          const movementX = (mouseXY[0] - positionOnScreen[0]) / 5;
+          if (Math.abs(movementX) > 0.4) {
+            setIsBeingMoved(false);
+            setTilt([0, tiltRef.current[1]]);
+          } else {
+            movements[0] = movementX
+          }
+        }
+
+        if (mouseXY[1] != null) {
+          const movementY = (mouseXY[1] - positionOnScreen[1]) / 5;
+          if (Math.abs(movementY) > 0.4) {
+            setIsBeingMoved(false);
+            setTilt([tiltRef.current[0], 0]);
+          } else {
+            movements[1] = movementY
+          }
+        }
+
+
         setTilt(movements);
       }
-    }
   }, [mouseXY, isBeingMovedRef, positionOnScreen]);
 
   const onPointerOverEventHandler = (e: any) => {
@@ -70,4 +88,4 @@ const Straw: React.FC<props> = ({ mouseXY, position, rotation = [0, 0, 0], width
   )
 }
 
-export default Straw;
+export default Five;
